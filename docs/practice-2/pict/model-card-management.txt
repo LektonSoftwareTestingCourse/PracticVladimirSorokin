@@ -1,0 +1,14 @@
+# Card-Management: POST /api/cards
+bin: registered_400000, registered_400001, bad_format, unknown
+cardholder_name: regular, hyphenated, empty
+currency_code: RUB, USD, wrong_length
+daily_limit: positive, zero, negative
+monthly_limit: positive, zero, negative
+initial_balance: positive, zero
+
+# One refusal condition per row; all other fields stay valid.
+# No monthlyLimit >= dailyLimit rule: the contract does not require it.
+IF [bin] = "bad_format" OR [bin] = "unknown" THEN [cardholder_name] <> "empty" AND [currency_code] <> "wrong_length" AND [daily_limit] <> "negative" AND [monthly_limit] <> "negative";
+IF [cardholder_name] = "empty" THEN [currency_code] <> "wrong_length" AND [daily_limit] <> "negative" AND [monthly_limit] <> "negative";
+IF [currency_code] = "wrong_length" THEN [daily_limit] <> "negative" AND [monthly_limit] <> "negative";
+IF [daily_limit] = "negative" THEN [monthly_limit] <> "negative";

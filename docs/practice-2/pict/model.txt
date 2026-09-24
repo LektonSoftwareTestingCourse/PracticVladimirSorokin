@@ -1,0 +1,16 @@
+# Authorization: POST /api/internal/authorize
+# below/equal/above compare amount with the REMAINING limit, not its full value.
+card_status: ACTIVE, INACTIVE, BLOCKED, EXPIRED
+expiry: future, current_month, past
+amount_vs_daily: below, equal, above
+amount_vs_monthly: below, equal, above
+amount_vs_balance: below, equal, above
+terminal_type: POS, ATM, ECOM
+mcc: grocery, restaurant, electronics, travel
+
+# Test-design restrictions: one refusal condition per row.
+# These combinations are excluded deliberately; they are not physically impossible.
+IF [card_status] <> "ACTIVE" THEN [expiry] <> "past" AND [amount_vs_daily] = "below" AND [amount_vs_monthly] = "below" AND [amount_vs_balance] = "below";
+IF [expiry] = "past" THEN [amount_vs_daily] = "below" AND [amount_vs_monthly] = "below" AND [amount_vs_balance] = "below";
+IF [amount_vs_daily] = "above" THEN [amount_vs_monthly] <> "above" AND [amount_vs_balance] <> "above";
+IF [amount_vs_monthly] = "above" THEN [amount_vs_balance] <> "above";

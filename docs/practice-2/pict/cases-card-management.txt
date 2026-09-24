@@ -1,0 +1,17 @@
+bin	cardholder_name	currency_code	daily_limit	monthly_limit	initial_balance
+bad_format	regular	USD	zero	positive	positive
+registered_400000	hyphenated	RUB	zero	zero	zero
+registered_400000	hyphenated	USD	positive	negative	positive
+registered_400001	empty	RUB	positive	positive	zero
+registered_400000	empty	USD	zero	zero	positive
+bad_format	regular	RUB	positive	zero	zero
+bad_format	hyphenated	USD	zero	positive	zero
+registered_400001	regular	RUB	negative	zero	positive
+unknown	regular	USD	positive	positive	zero
+registered_400001	hyphenated	wrong_length	zero	positive	zero
+unknown	hyphenated	RUB	zero	zero	positive
+registered_400000	regular	wrong_length	positive	positive	positive
+registered_400000	hyphenated	USD	negative	positive	zero
+registered_400001	regular	RUB	zero	negative	zero
+registered_400001	hyphenated	wrong_length	zero	zero	zero
+registered_400001	regular	USD	negative	positive	zero
