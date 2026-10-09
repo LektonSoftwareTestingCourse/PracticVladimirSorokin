@@ -380,3 +380,23 @@ C-18: баланс 1 000 000…50 000 000 копеек, дневной лими�
 | CM-PW-14 | C7 | − | PW: cases-card-management.txt, строка 14 | 400001; IVAN IVANOV; 643; 0/-1/0 | 400; monthlyLimit < 0 |
 | CM-PW-15 | C7 | − | PW: cases-card-management.txt, строка 15 | 400001; ANNA-SMIRNOVA; 64; 0/0/0 | 400; длина валюты |
 | CM-PW-16 | C7 | − | PW: cases-card-management.txt, строка 16 | 400001; IVAN IVANOV; 840; -1/2000/0 | 400; dailyLimit < 0 |
+
+### 6 Важные тройки
+
+## Authorization
+
+| ID | Требование | Вид | Источник | Данные / запрос | Ожидаемый результат |
+|---|---|:---:|---|---|---|
+| A-TR-01 | A4, A5, A6, A7 | + | Ручной: три равенства одновременно | Карта P, expiryDate=1026. dailyUsed=200, monthlyUsed=500, D=300, M=600, B=100. amount=100, POS, mcc=5411 | APPROVED/00; B'=0, dailyUsed'=300, monthlyUsed'=600 |
+| A-TR-02 | A8 | − | Ручной: CMS down + активная карта + сумма | Карта P, ACTIVE, expiry 1126, CMS доступен при подготовке. amount=100, запрос по шаблону A | DECLINED/05, ISSUER_TIMEOUT; баланс и usage прежние |
+| A-TR-03 | A10, A7 | + | Ручной: Bin Lookup down + issuerId из Switch | Карта P, ACTIVE, CMS доступен. Switch передал issuerId=ISS001. amount=100 | APPROVED/00 с issuerId из Switch, корректный резерв |
+| A-TR-04 | A9, A7 | + | Ручной: уникальность RRN на выборке | 30 разных активных карт: expiry=1126, D=1000, M=2000, B=1000, usage=0. По одному платежу amount=1, STAN 000001…000030 | 30 APPROVED/00; 30 различных RRN по 12 цифр; authCode по формату, без коллизий |
+
+## Card-Management
+
+| ID | Требование | Вид | Источник | Данные / запрос | Ожидаемый результат |
+|---|---|:---:|---|---|---|
+| C-TR-01 | C4, C2, A1 | + | Ручной: soft delete + авторизация удалённой | Карта P создана по данным C. DELETE /api/cards/{pan}; GET по PAN и список; авторизация удалённой карты | DELETE 204; status=DELETED в БД; GET 404, в списке карты нет; авторизация DECLINED/14 |
+| C-TR-02 | C10 | − | Ручной: идемпотентность RRN | Новая ACTIVE, B=100. POST /api/cards/{pan}/reserve, {"amount":10,"rrn":"012345678901"}; повтор того же запроса | Первый 200, второй 409; итоговый B=90, одна запись резерва |
+| C-TR-03 | C3 | + | Ручной: два фильтра вместе | В отдельном наборе 2 ACTIVE/400000, 2 BLOCKED/400000, 2 ACTIVE/400001. GET /api/cards?status=ACTIVE&bin=400000 | 200; total=2, только ACTIVE и BIN 400000 |
+| C-TR-04 | C1, C7 | + | Ручной: 4 параметра вместе | POST /api/cards: bin=400001, cardholderName=ANNA-SMIRNOVA, currencyCode=840, dailyLimit=0, monthlyLimit=0, initialBalance=0 | 201; карта создана, все три суммы равны 0, PAN с Луна, срок +3 года |
