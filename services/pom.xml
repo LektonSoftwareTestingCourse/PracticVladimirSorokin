@@ -32,6 +32,7 @@
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <!-- E2E require docker compose; enabled via -Pe2e-tests -->
         <skipE2eTests>true</skipE2eTests>
+        <argLine></argLine>
     </properties>
 
 
@@ -182,6 +183,21 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.14</version>
+                    <executions>
+                        <execution>
+                            <goals><goal>prepare-agent</goal></goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>verify</phase>
+                            <goals><goal>report</goal></goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>

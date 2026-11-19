@@ -88,8 +88,18 @@ jobs:
     - name: Run java linter
       run: mvn -f services/pom.xml -P${{ matrix.service }} checkstyle:check
 
-    - name: Build services (tests skipped until students add them)
-      run: mvn -f services/pom.xml -P${{ matrix.service }} install -Dcheckstyle.skip=true -DskipTests
+    - name: Build services and run tests
+      run: mvn -B -f services/pom.xml -P${{ matrix.service }} verify -Dcheckstyle.skip=true
+
+    - name: Upload test and coverage reports
+      if: always() && contains(fromJSON('["gateway", "switch", "authorization", "card-management"]'), matrix.service)
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report-${{ matrix.service }}
+        path: |
+          services/${{ matrix.service }}/target/site/jacoco/
+          services/${{ matrix.service }}/target/surefire-reports/
+        if-no-files-found: error
 
   frontend-dashboard:
     runs-on: ubuntu-latest

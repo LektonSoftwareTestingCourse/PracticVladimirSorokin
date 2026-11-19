@@ -152,6 +152,10 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -212,7 +216,7 @@
                         <exclude>**/load/**/*.java</exclude>
                     </excludes>
                     <argLine>
-                        -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/1.15.11/byte-buddy-agent-1.15.11.jar
+                        @{argLine}
                         -XX:+EnableDynamicAgentLoading
                     </argLine>
                 </configuration>
