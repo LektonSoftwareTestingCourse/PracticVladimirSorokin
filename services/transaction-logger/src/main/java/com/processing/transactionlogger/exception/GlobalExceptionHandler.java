@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.transaction.CannotCreateTransactionException;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
@@ -85,8 +86,8 @@ public class GlobalExceptionHandler {
         ));
     }
 
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResponse> handleDatabaseAccess(DataAccessException exception) {
+    @ExceptionHandler({DataAccessException.class, CannotCreateTransactionException.class})
+    public ResponseEntity<ErrorResponse> handleDatabaseAccess(RuntimeException exception) {
         log.error("Transaction logger database access error", exception);
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(errorResponse(
                 "Database operation failed",

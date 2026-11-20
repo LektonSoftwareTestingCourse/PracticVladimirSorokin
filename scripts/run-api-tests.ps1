@@ -52,6 +52,29 @@ function Read-TestResult([string]$Directory) {
     return $summary
 }
 
+function Assert-KnownContractFailures([string]$Directory) {
+    $baselinePath = Join-Path $repo 'services/api-tests/known-contract-failures.json'
+    $baseline = @(Get-Content -Raw -LiteralPath $baselinePath | ConvertFrom-Json)
+    $cases = @(Get-ChildItem -LiteralPath $Directory -Filter 'TEST-*.xml' | ForEach-Object {
+        ([xml](Get-Content -Raw -LiteralPath $_.FullName)).testsuite.testcase
+    })
+    if ($cases.Count -ne $baseline.Count -or @($baseline.test | Sort-Object -Unique).Count -ne $baseline.Count) {
+        throw 'Contract test list differs from the reviewed baseline'
+    }
+    foreach ($expected in $baseline) {
+        $matching = @($cases | Where-Object {
+            $_.classname -ceq 'com.processing.api.ContractDefectsTest' -and $_.name -ceq $expected.test
+        })
+        if ($matching.Count -ne 1 -or -not $matching[0].failure) {
+            throw "Known defect no longer reproduces as expected: $($expected.test)"
+        }
+        $message = [regex]::Replace([string]$matching[0].failure.message, '\s+', ' ').Trim()
+        if ($message -cnotmatch $expected.failurePattern) {
+            throw "Unexpected contract failure: $($expected.test): $message"
+        }
+    }
+}
+
 function Invoke-ApiTests {
     param([string]$Name, [string[]]$Options = @(), [switch]$ExpectAssertion, [switch]$Contract)
     $reports = Join-Path $reportRoot $Name
@@ -62,6 +85,11 @@ function Invoke-ApiTests {
     $summary = Read-TestResult $reports
     $results.Add(@{name = $Name; result = $summary; exitCode = $exitCode})
     if ($summary.errors -ne 0 -or $summary.skipped -ne 0) { throw "$Name contains errors or skipped tests" }
+    if ($Contract) {
+        Assert-KnownContractFailures $reports
+        $results[$results.Count - 1].knownFailuresVerified = $true
+        if ($exitCode -eq 0) { throw 'Contract defects unexpectedly passed; review the baseline' }
+    }
     if ($ExpectAssertion) {
         if ($exitCode -eq 0 -or $summary.failures -eq 0) { throw "Mutation survived: $Name" }
     } elseif (-not $Contract -and ($exitCode -ne 0 -or $summary.failures -ne 0)) {
@@ -129,6 +157,30 @@ function Check-PublishRollback {
         '-Dtest=BrokerFailureApiTest#shouldKeepFailedPaymentAbsentAfterRecovery')
 }
 
+function Check-LoggerDatabaseFailure {
+    $pan = '400000' + (Get-Random -Minimum 0 -Maximum 10000000000).ToString('D10')
+    $options = @('-Dapi.excludedGroups=contract-defect,broker-fault', "-Dprobe.databasePan=$pan")
+    Invoke-ApiTests -Name 'database-prepare' -Options ($options +
+        '-Dtest=DatabaseFailureApiTest#shouldPrepareMessageBeforeDatabaseFailure')
+    try {
+        Invoke-Compose -Options @('stop', 'logger-postgres')
+        Invoke-ApiTests -Name 'database-unavailable' -Options ($options +
+            '-Dtest=DatabaseFailureApiTest#shouldReturn503*')
+    } finally {
+        Invoke-Compose -Options @('start', 'logger-postgres')
+        $ready = $false
+        for ($attempt = 0; $attempt -lt 30; $attempt++) {
+            & docker compose -p sorokin-api -f $composeFile exec -T logger-postgres pg_isready -U smp -d smp 2>&1 |
+                Out-Null
+            if ($LASTEXITCODE -eq 0) { $ready = $true; break }
+            Start-Sleep -Seconds 1
+        }
+        if (-not $ready) { throw 'Logger database did not recover' }
+    }
+    Invoke-ApiTests -Name 'database-recovered' -Options ($options +
+        '-Dtest=DatabaseFailureApiTest#shouldRecoverWithPreviousMessageAndAcceptNewWrites')
+}
+
 Push-Location $repo
 try {
     if (-not $SkipBuild) {
@@ -155,6 +207,7 @@ try {
         Check-LoggerMutation
     }
     Invoke-ApiTests -Name 'contract-defects' -Options @('-Dtest=ContractDefectsTest', '-Dapi.excludedGroups=none') -Contract
+    Check-LoggerDatabaseFailure
 } finally {
     @{timeUtc = [DateTime]::UtcNow.ToString('o'); runs = $results} | ConvertTo-Json -Depth 6 |
         Set-Content -LiteralPath (Join-Path $evidence 'summary.json') -Encoding utf8

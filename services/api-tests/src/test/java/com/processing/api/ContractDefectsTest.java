@@ -22,6 +22,16 @@ import static org.hamcrest.Matchers.matchesPattern;
 @Tag("contract-defect")
 class ContractDefectsTest extends ApiTest {
     @Test
+    void shouldExplainInvalidChartRange() {
+        // Given / When: ValidDateRange.message должен объяснять нарушенное правило.
+        Response response = gateway().queryParam("from", "2026-11-21T00:00:00Z")
+                .queryParam("to", "2026-11-20T00:00:00Z").get("/api/dashboard/charts");
+
+        // Then
+        response.then().statusCode(400).body("message", containsString("dateFrom must not be after dateTo"));
+    }
+
+    @Test
     void shouldIdentifyInvalidGenerationField() {
         // Given / When: условие практики требует имя нарушенного поля в теле ошибки.
         Response response = gateway().body(Map.of("count", 1)).post("/api/cards/generate");

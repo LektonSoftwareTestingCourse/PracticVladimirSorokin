@@ -13,7 +13,7 @@
     <properties>
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.2</awaitility.version>
-        <api.excludedGroups>contract-defect,broker-fault</api.excludedGroups>
+        <api.excludedGroups>contract-defect,broker-fault,database-fault</api.excludedGroups>
         <api.reportsDirectory>${project.build.directory}/surefire-reports</api.reportsDirectory>
     </properties>
     <dependencies>

@@ -120,7 +120,7 @@ class CardFiltersApiTest extends ApiTest {
 
     @ParameterizedTest
     @CsvSource({"limit,0", "limit,-1", "offset,-1", "bin,40000", "bin,4000000", "bin,40000X",
-            "issuerId,lower", "issuerId,ABCDEFGHIJK"})
+            "issuerId,lower", "issuerId,ABCDEFGHIJK", "issuerId,''"})
     void shouldRejectInvalidCardFilter(String field, String value) {
         // Given / When
         Response response = gateway().queryParam(field, value).get("/api/cards");
@@ -153,10 +153,29 @@ class CardFiltersApiTest extends ApiTest {
     }
 
     private String ownBin() {
+        return ownBin("ISS001");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"A", "ABCDEFGHIJ"})
+    void shouldAcceptIssuerIdLengthBoundaries(String issuerId) {
+        // Given
+        String bin = ownBin(issuerId);
+        String pan = createCard(Data.changed(Data.card(), "bin", bin)).path("pan");
+
+        // When
+        Response response = gateway().queryParam("bin", bin).queryParam("issuerId", issuerId).get("/api/cards");
+
+        // Then
+        response.then().statusCode(200).body("total", equalTo(1), "cards", hasSize(1),
+                "cards[0].pan", equalTo(pan), "cards[0].issuerId", equalTo(issuerId));
+    }
+
+    private String ownBin(String issuerId) {
         for (int attempt = 0; attempt < 20; attempt++) {
             String bin = "2" + String.format("%05d",
                     Math.floorMod(java.util.UUID.randomUUID().getLeastSignificantBits(), 100000));
-            Response response = given().spec(Api.CARDS).body(Map.of("bin", bin, "issuerId", "ISS001"))
+            Response response = given().spec(Api.CARDS).body(Map.of("bin", bin, "issuerId", issuerId))
                     .post("/api/bins");
             if (response.statusCode() == 201) {
                 response.then().body("bin", equalTo(bin));

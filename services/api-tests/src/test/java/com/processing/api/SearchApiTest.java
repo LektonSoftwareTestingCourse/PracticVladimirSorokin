@@ -162,14 +162,53 @@ class SearchApiTest extends ApiTest {
     void shouldRespectRecentLimit(int limit) {
         // Given
         String pan = Data.missingPan();
-        storeFixtures(pan);
+        List<String> expectedIds = storeRecentFixtures(pan).stream().limit(limit).toList();
 
         // When
         Response response = gateway().queryParam("limit", limit).get("/api/dashboard/recent");
 
         // Then
         response.then().statusCode(200).body("size()", org.hamcrest.Matchers.lessThanOrEqualTo(limit),
-                "size()", greaterThanOrEqualTo(1));
+                "size()", greaterThanOrEqualTo(expectedIds.size()),
+                "id.take(" + expectedIds.size() + ")", equalTo(expectedIds));
+        List<Instant> created = response.jsonPath().getList("createdAt", String.class).stream().map(Instant::parse).toList();
+        org.junit.jupiter.api.Assertions.assertEquals(created.stream().sorted(java.util.Comparator.reverseOrder()).toList(),
+                created);
+    }
+
+    private List<String> storeRecentFixtures(String pan) {
+        List<String> latest = gateway().queryParam("limit", 1).get("/api/dashboard/recent").then().statusCode(200)
+                .extract().jsonPath().getList("createdAt", String.class);
+        Instant time = latest.stream().map(Instant::parse).max(java.util.Comparator.naturalOrder())
+                .orElseGet(Instant::now).plusSeconds(1);
+        Map<String, Object> first = Data.changed(Data.transaction(pan), "createdAt", time.toString());
+        Map<String, Object> second = Data.changed(Data.transaction(pan), "createdAt", time.plusSeconds(1).toString());
+        given().spec(Api.LOGGER).body(first).post("/api/internal/log").then().statusCode(201)
+                .body("id", equalTo(first.get("id")));
+        given().spec(Api.LOGGER).body(second).post("/api/internal/log").then().statusCode(201)
+                .body("id", equalTo(second.get("id")));
+        return List.of(second.get("id").toString(), first.get("id").toString());
+    }
+
+    @Test
+    void shouldRejectReversedChartDates() {
+        // Given / When
+        Response response = gateway().queryParam("from", "2026-11-21T00:00:00Z")
+                .queryParam("to", "2026-11-20T00:00:00Z").get("/api/dashboard/charts");
+
+        // Then: ChartsFilter / ValidDateRange; пустое сообщение обработчика зафиксировано в D-04.
+        response.then().statusCode(400).body("serviceName", equalTo("transaction-logger"),
+                "error", equalTo("Validation error"), "message", equalTo(""), "retryAfterMs", equalTo("0"));
+    }
+
+    @Test
+    void shouldReturnEmptyChartForEqualDates() {
+        // Given / When: диапазон [from,to) пуст при равных границах.
+        Response response = gateway().queryParam("from", "2026-11-20T00:00:00Z")
+                .queryParam("to", "2026-11-20T00:00:00Z").get("/api/dashboard/charts");
+
+        // Then
+        response.then().statusCode(200).body("size()", equalTo(0));
     }
 
     @ParameterizedTest

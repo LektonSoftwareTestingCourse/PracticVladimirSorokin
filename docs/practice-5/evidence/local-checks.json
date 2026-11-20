@@ -1,188 +1,235 @@
 {
   "branch": "practice-5",
-  "completedAtUtc": "2026-11-20T03:16:37.6335186Z",
+  "completedAtUtc": "2026-11-20T05:09:49.0018759Z",
   "commands": [
-    "pwsh -File ./scripts/run-api-tests.ps1",
-    "pwsh -File ./scripts/run-api-tests.ps1 -SkipBuild -SkipMutations"
+    "pwsh -NoProfile -File ./scripts/run-api-tests.ps1"
   ],
+  "reportSession": "20261120-050153-202026",
   "finalRuns": [
     {
       "exitCode": 0,
       "result": {
-        "tests": 445,
-        "errors": 0,
+        "skipped": 0,
+        "tests": 481,
         "failures": 0,
-        "skipped": 0
+        "errors": 0
       },
       "name": "run-1"
     },
     {
       "exitCode": 0,
       "result": {
-        "tests": 445,
-        "errors": 0,
+        "skipped": 0,
+        "tests": 481,
         "failures": 0,
-        "skipped": 0
+        "errors": 0
       },
       "name": "run-2"
     },
     {
       "exitCode": 0,
       "result": {
-        "tests": 445,
-        "errors": 0,
+        "skipped": 0,
+        "tests": 481,
         "failures": 0,
-        "skipped": 0
+        "errors": 0
       },
       "name": "run-3"
     },
     {
       "exitCode": 0,
       "result": {
+        "skipped": 0,
         "tests": 1,
-        "errors": 0,
         "failures": 0,
-        "skipped": 0
+        "errors": 0
       },
       "name": "publish-failure-rollback"
     },
     {
       "exitCode": 0,
       "result": {
+        "skipped": 0,
         "tests": 1,
-        "errors": 0,
         "failures": 0,
-        "skipped": 0
+        "errors": 0
       },
       "name": "absence-after-recovery"
     },
     {
       "exitCode": 1,
       "result": {
-        "tests": 18,
-        "errors": 0,
-        "failures": 18,
-        "skipped": 0
+        "skipped": 0,
+        "tests": 19,
+        "failures": 19,
+        "errors": 0
       },
+      "knownFailuresVerified": true,
       "name": "contract-defects"
+    },
+    {
+      "exitCode": 0,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "name": "database-prepare"
+    },
+    {
+      "exitCode": 0,
+      "result": {
+        "skipped": 0,
+        "tests": 11,
+        "failures": 0,
+        "errors": 0
+      },
+      "name": "database-unavailable"
+    },
+    {
+      "exitCode": 0,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
+      "name": "database-recovered"
     }
   ],
   "mutations": [
     {
-      "result": {
-        "tests": 1,
-        "skipped": 0,
-        "errors": 0,
-        "failures": 1
-      },
       "exitCode": 1,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0
+      },
       "name": "mutation-status"
     },
     {
-      "result": {
-        "tests": 1,
-        "skipped": 0,
-        "errors": 0,
-        "failures": 1
-      },
       "exitCode": 1,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0
+      },
       "name": "mutation-balance"
     },
     {
-      "result": {
-        "tests": 1,
-        "skipped": 0,
-        "errors": 0,
-        "failures": 1
-      },
       "exitCode": 1,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 1,
+        "errors": 0
+      },
       "name": "mutation-dedup"
     },
     {
-      "result": {
-        "tests": 1,
-        "skipped": 0,
-        "errors": 0,
-        "failures": 0
-      },
       "exitCode": 0,
+      "result": {
+        "skipped": 0,
+        "tests": 1,
+        "failures": 0,
+        "errors": 0
+      },
       "name": "dedup-restored"
     }
   ],
   "contractAssertions": [
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <200>.",
-      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[1]"
+      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[1]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <200>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <200>.",
-      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[2]"
+      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[2]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <200>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <200>.",
-      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[3]"
+      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[3]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <200>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <200>.",
-      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[4]"
+      "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[4]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <200>."
     },
     {
-      "assertion": "1 expectation failed. JSON path message doesn't match. Expected: a string containing \"bins\" Actual: must not be empty",
-      "test": "shouldIdentifyInvalidGenerationField"
+      "test": "shouldIdentifyInvalidGenerationField",
+      "assertion": "1 expectation failed. JSON path message doesn't match. Expected: a string containing \"bins\" Actual: must not be empty"
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <404>.",
-      "test": "shouldRejectZeroAtAuthorizationBoundary"
+      "test": "shouldRejectZeroAtAuthorizationBoundary",
+      "assertion": "1 expectation failed. Expected status code <400> but was <404>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <200>.",
-      "test": "shouldNotRefundMoreThanReserved"
+      "test": "shouldNotRefundMoreThanReserved",
+      "assertion": "1 expectation failed. Expected status code <400> but was <200>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldRejectMalformedCardFilterWith400(String, String)[1]"
+      "test": "shouldRejectMalformedCardFilterWith400(String, String)[1]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldRejectMalformedCardFilterWith400(String, String)[2]"
+      "test": "shouldRejectMalformedCardFilterWith400(String, String)[2]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldRejectMalformedCardFilterWith400(String, String)[3]"
+      "test": "shouldRejectMalformedCardFilterWith400(String, String)[3]",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldRejectMissingReserveAmountAsInputError"
+      "test": "shouldRejectMissingReserveAmountAsInputError",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <200> but was <409>.",
-      "test": "shouldKeepIdenticalNanosecondMessageIdempotent"
+      "test": "shouldKeepIdenticalNanosecondMessageIdempotent",
+      "assertion": "1 expectation failed. Expected status code <200> but was <409>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldReturn400ForMalformedCardJson"
+      "test": "shouldReturn400ForMalformedCardJson",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     },
     {
-      "assertion": "1 expectation failed. JSON path expiryDate doesn't match. Expected: a string matching the pattern '(0[1-9]|1[0-2])\\d{2}' Actual: 2029-11",
-      "test": "shouldReturnExpiryInDocumentedMmYyFormat"
+      "test": "shouldReturnExpiryInDocumentedMmYyFormat",
+      "assertion": "1 expectation failed. JSON path expiryDate doesn't match. Expected: a string matching the pattern '(0[1-9]|1[0-2])\\d{2}' Actual: 2029-11"
     },
     {
-      "assertion": "1 expectation failed. JSON path mti doesn't match. Expected: 0110 Actual: 0100",
-      "test": "shouldReturnResponseMti0110"
+      "test": "shouldExplainInvalidChartRange",
+      "assertion": "1 expectation failed. JSON path message doesn't match. Expected: a string containing \"dateFrom must not be after dateTo\" Actual:"
     },
     {
-      "assertion": "1 expectation failed. Expected status code <200> but was <404>.",
-      "test": "shouldRoutePublicMerchantListThroughGateway"
+      "test": "shouldReturnResponseMti0110",
+      "assertion": "1 expectation failed. JSON path mti doesn't match. Expected: 0110 Actual: 0100"
     },
     {
-      "assertion": "1 expectation failed. JSON path message doesn't match. Expected: a string containing \"amount\" Actual: null",
-      "test": "shouldNameInvalidAuthorizationField"
+      "test": "shouldRoutePublicMerchantListThroughGateway",
+      "assertion": "1 expectation failed. Expected status code <200> but was <404>."
     },
     {
-      "assertion": "1 expectation failed. Expected status code <400> but was <500>.",
-      "test": "shouldReturnDbUnavailableOutcomeInsteadOfUnhandledRollbackError"
+      "test": "shouldNameInvalidAuthorizationField",
+      "assertion": "1 expectation failed. JSON path message doesn't match. Expected: a string containing \"amount\" Actual: null"
+    },
+    {
+      "test": "shouldReturnDbUnavailableOutcomeInsteadOfUnhandledRollbackError",
+      "assertion": "1 expectation failed. Expected status code <400> but was <500>."
     }
   ],
+  "contractGuardChecks": {
+    "unexpectedSuccessRejected": true,
+    "reviewedCases": 19,
+    "baselineAccepted": true,
+    "changedFailureRejected": true
+  },
+  "preFixDatabaseResult": {
+    "tests": 11,
+    "failures": 11,
+    "errors": 0,
+    "skipped": 0
+  },
   "pairwise": {
     "cards": {
       "missingPairs": 0,
@@ -198,27 +245,30 @@
     }
   },
   "sourceSha256": {
-    "services/api-tests/src/test/java/com/processing/api/CardFiltersApiTest.java": "ffc5c2a66991d4369ba468702696556b3dc958aa5611b73464ec6a88be7be33f",
-    "services/api-tests/src/test/java/com/processing/api/BrokerFailureApiTest.java": "2924e2ad81ff4c68c1ecd2fcc0e04ea68a3b452124b2ed2bcbe0efa9dbdf879a",
-    "services/api-tests/src/test/java/com/processing/api/AuthorizationApiTest.java": "9f2057aa338472f60d5c7ae02671a3304269887ca4ddb1e609413943429f92e4",
-    "services/api-tests/src/test/java/com/processing/api/ReservationApiTest.java": "3b2f950a1f38d1a7ccd786a2f60cf5f1aea48cd11c17ce9118304a6355a3b84f",
-    "services/api-tests/src/test/java/com/processing/api/FaultApiTest.java": "f7486751676a4645d5567e87cd83391a5464d0751baa7984f42d9e0c03410ac7",
-    "services/api-tests/src/test/java/com/processing/api/AuthorizationValidationApiTest.java": "bf8591069218bbfa2620a84911a2cb59c39232cb5d95f7c3dfd3767b0745a333",
-    "services/api-tests/src/test/java/com/processing/api/SearchApiTest.java": "5a9e81184dd6c9f3bf660e1dc628e12f3dfae576ca2249a17f47698c39213f71",
-    "services/api-tests/src/test/java/com/processing/api/CardsApiTest.java": "9925f058153583f244e681a78cf489bb579babd3fd3438cbb28e7fee8e341329",
-    "services/api-tests/http_faults.py": "24682728588455303a1e3952e39408e6003f10ceb9a3ed2692b511abb41bb72f",
-    "services/api-tests/pom.xml": "24f317362a536394dc3e6b73d3e3bd270ab47e95b6c9f3f0589b87acbbe67337",
-    "services/api-tests/src/test/java/com/processing/api/LoggerApiTest.java": "6e51c3e86f5d26c217f950f49dd8bde23a5097fb38503ce340ce89df2c288ed2",
-    "services/api-tests/src/test/java/com/processing/api/ContractDefectsTest.java": "087f6157ad8e1a0225ea0193e581ed1ee5a28b8d45cb3d0ac3dece208971419d",
-    "services/api-tests/src/test/java/com/processing/api/support/ApiTest.java": "aba2bb77657721891d9c5ff368fd3b22dba76187c4990ccce7df91caec325a76",
-    "services/api-tests/src/test/resources/schemas/authorization.json": "87295b22c678b3faebf04c37b938e04ca23baa6e55d3c561985d86eeedb29852",
-    ".github/workflows/practice-5-api.yml": "81eefcaa436228c336ad53768b5f225b1edeb6885f7e8d8b413797b5ec82efd1",
-    "services/api-tests/src/test/java/com/processing/api/support/Api.java": "a530efb877f567bd18b5e23d8f0c27011693297c0859b351de51ed98e5c9b14b",
-    "services/api-tests/src/test/java/com/processing/api/SimulatorApiTest.java": "5467e3b1ca3e111796235da7063dde69491ef88e0f237e4ce09d0d2da2814f63",
-    "services/api-tests/src/test/java/com/processing/api/support/Data.java": "b96f85b181133e1916bead9de6a7ffcb0cb592e7ce662087811cde985ee640e9",
-    "services/api-tests/src/test/java/com/processing/api/GatewayApiTest.java": "4d4d810dc07156d0c7e94f042b2cee686bca0cc9d08fc1b4aa4851d4d598f876",
-    "scripts/run-api-tests.ps1": "7134704371f51d228c456fae0f93a6a8c734d23916c188f2669f69e9a2af7a48",
-    "services/api-tests/compose.yaml": "ff17648759dd35f21a7b99b915aba1cf6a235b520598573ca3afe5d34d92d8ad",
-    "services/api-tests/src/test/java/com/processing/api/BinLookupApiTest.java": "438485f8e382cf1bdf71668a618aac692d23a315a6e132e9a02da52da1832611"
+    ".github/workflows/practice-5-api.yml": "69ddb934cbfa4a70654da2cef14539b298c12ad846a07963ce479d4d6e3a029e",
+    "scripts/run-api-tests.ps1": "8a893fca5933d8844f9fff9e183e716bfa8b446a8b4be1e2321ef341a98029a8",
+    "services/api-tests/compose.yaml": "06fa1a7a453e24b9f046fa36bbb3c5187ff8ade4174fedf008224768ec0f5b03",
+    "services/api-tests/http_faults.py": "7a5785e073c1ce48ed14dca54b8a235f9fa4979015fbb08817d5d7884ef47e76",
+    "services/api-tests/known-contract-failures.json": "38e919586ef8688505a2d1840906a88aff4ab39d1ade3e3c89b359af04cb60b7",
+    "services/api-tests/pom.xml": "78ebd5a464c2eb5c7c0bc1e1ba2e0ef10b0200d20cc435dd2d247ad56bc76a1d",
+    "services/api-tests/src/test/java/com/processing/api/AuthorizationApiTest.java": "22ad7d0c513cb540dab85aa40a43af40f28b876131f37a2adacc17471f5cd3e3",
+    "services/api-tests/src/test/java/com/processing/api/AuthorizationValidationApiTest.java": "a06618e828a04a8070722332dc1d7a2894676fa8c4b7dcd1a6f4d331d661e53b",
+    "services/api-tests/src/test/java/com/processing/api/BinLookupApiTest.java": "fc8f907a44987735f568f08585ee646c49c4e004fc4f3ef092700d11d2690e52",
+    "services/api-tests/src/test/java/com/processing/api/BrokerFailureApiTest.java": "630624e6da4c51a0688b739fe3cff3f4c39339e604c1fb4210848a3258a83abd",
+    "services/api-tests/src/test/java/com/processing/api/CardFiltersApiTest.java": "289478a39cfb156b008aa0f98c7cc8ec3a441e2492978ae1aa042ca7cbfb0786",
+    "services/api-tests/src/test/java/com/processing/api/CardsApiTest.java": "124c3a58d0ac2b89bf389925cff871cd4889be9324cf313d45a82e0b052e102d",
+    "services/api-tests/src/test/java/com/processing/api/ContractDefectsTest.java": "a8fde0d75940ee521e2cf3070a7a58bcf29df684a7c59c83452e5af16157439d",
+    "services/api-tests/src/test/java/com/processing/api/DatabaseFailureApiTest.java": "12fafdb73a91194f6161cb7b6e9b53473f04a2bd61023815364d30fac0f58d04",
+    "services/api-tests/src/test/java/com/processing/api/FaultApiTest.java": "c0b4128a142e727f9570bc51c33cea835845b6483b325432528c1c4d408f8141",
+    "services/api-tests/src/test/java/com/processing/api/GatewayApiTest.java": "accbedd345fe967957cf78afb995e748611f2ed9730f45660e2d7aba6cdb23ad",
+    "services/api-tests/src/test/java/com/processing/api/LoggerApiTest.java": "1a950bba2d3abc339cbae6de2c2a184428e45999d6126579ba17db4a32417082",
+    "services/api-tests/src/test/java/com/processing/api/ReservationApiTest.java": "68934f2653f373cf50220977eb7ede3cbb8b7f269b1d956f3979a3a9c92c4f06",
+    "services/api-tests/src/test/java/com/processing/api/SearchApiTest.java": "f24560be79568dad4abb3bb4dc941977c0c8d259e7cc26879b167d9979a66831",
+    "services/api-tests/src/test/java/com/processing/api/SimulatorApiTest.java": "d9b44ab77fba3f802184f0924a2e4fc7611eb6f998a7d9839bf90426669c9691",
+    "services/api-tests/src/test/java/com/processing/api/support/Api.java": "e58de2bb4d83c10edd800efc4f8edf3d3a19d8088aaac139287ee26258169cee",
+    "services/api-tests/src/test/java/com/processing/api/support/ApiTest.java": "1d7e03edf166cf0ba8f76679ded46f7d5a2fda8d52141fb3eed2c8d8825512eb",
+    "services/api-tests/src/test/java/com/processing/api/support/Data.java": "6eb604987a02ab0f34a8e6bb215d344c400da19d4c3ff2126645cc35a06c5965",
+    "services/api-tests/src/test/resources/schemas/authorization.json": "d2afe9b2d5fc1dd4b85754fb59c2deafc5eb9287f8c68b654128e2300d1fd6ad",
+    "services/transaction-logger/src/main/java/com/processing/transactionlogger/exception/GlobalExceptionHandler.java": "c70b3ac0730b285f6149f93b2c3ef34015c50a9ab57db6c715be08f933eb65fe"
   }
 }

@@ -25,7 +25,7 @@ x-app: &app
     rabbitmq: {condition: service_healthy}
 
 services:
-  postgres:
+  postgres: &database
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: smp
@@ -37,6 +37,11 @@ services:
       timeout: 3s
       retries: 30
     tmpfs: [/var/lib/postgresql/data]
+
+  logger-postgres:
+    <<: *database
+    tmpfs: []
+    volumes: [logger-data:/var/lib/postgresql/data]
 
   rabbitmq:
     image: rabbitmq:3.13-alpine
@@ -84,7 +89,13 @@ services:
     <<: *app
     environment:
       <<: *environment
+      POSTGRES_HOST: logger-postgres
+      SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT: 2000
+      SPRING_DATASOURCE_HIKARI_VALIDATION_TIMEOUT: 1000
       SPRING_AMQP_DESERIALIZATION_TRUST_ALL: "true"
+    depends_on:
+      logger-postgres: {condition: service_healthy}
+      rabbitmq: {condition: service_healthy}
     volumes: ["${LOGGER_JAR:-../transaction-logger/target/transaction-logger-1.0.0.jar}:/app.jar:ro"]
     ports: [127.0.0.1:18088:8080]
 
@@ -129,3 +140,6 @@ services:
       MERCHANT_SIM_URL: http://merchant-acquirer:8080
     volumes: [../gateway/target/gateway-1.0.0.jar:/app.jar:ro]
     ports: [127.0.0.1:18080:8080]
+
+volumes:
+  logger-data:

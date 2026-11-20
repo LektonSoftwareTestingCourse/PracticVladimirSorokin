@@ -7,17 +7,20 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.processing.api.support.Api.gateway;
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.matchesPattern;
 
 // Источники: CardController, ReserveRequest, RollbackRequest; tz/05-card-management.md.
 class ReservationApiTest extends ApiTest {
@@ -38,19 +41,68 @@ class ReservationApiTest extends ApiTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "12345678901", "1234567890123", "ABCDEFGHIJKL"})
-    void shouldValidateRrnFormat(String rrn) {
+    @MethodSource("invalidReservationFields")
+    void shouldValidateReservationField(String operation, String field, Object value, String rule) {
         // Given
         String pan = createCard().path("pan");
 
         // When
-        Response response = gateway().body(Map.of("amount", 100, "rrn", rrn))
-                .post("/api/cards/{pan}/reserve", pan);
+        Map<String, Object> body = Data.changed(Map.of("pan", pan, "amount", 100, "rrn", Data.rrn()), field, value);
+        Response response = gateway().body(body).post("/api/cards/" + pan + "/" + operation);
 
         // Then
         response.then().statusCode(400).body("serviceName", equalTo("card-management"),
-                "error", equalTo("MethodArgumentNotValidException"), "message", notNullValue());
+                "error", equalTo("MethodArgumentNotValidException"), "message", matchesPattern("(?s).*(" + rule + ").*"));
         balance(pan, 1000);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"reserve,400000123456789", "reserve,40000012345678901", "reserve,400000123456789X",
+            "rollback,400000123456789", "rollback,40000012345678901", "rollback,400000123456789X"})
+    void shouldValidatePanInReservationPath(String operation, String invalidPan) {
+        // Given
+        String pan = createCard().path("pan");
+        Map<String, Object> body = Map.of("pan", pan, "amount", 100, "rrn", Data.rrn());
+
+        // When
+        Response response = gateway().body(body).post("/api/cards/" + invalidPan + "/" + operation);
+
+        // Then
+        response.then().statusCode(400).body("serviceName", equalTo("card-management"),
+                "error", equalTo("ConstraintViolationException"), "message", containsString("pan"));
+        balance(pan, 1000);
+    }
+
+    @ParameterizedTest
+    @CsvSource({"rrn,blank", "pan,blank", "amount,null"})
+    void shouldRejectMissingRollbackField(String field, String rule) {
+        // Given
+        String pan = createCard().path("pan");
+        Map<String, Object> body = Data.changed(Map.of("pan", pan, "amount", 100, "rrn", Data.rrn()), field, null);
+        body.remove(field);
+
+        // When
+        Response response = gateway().body(body).post("/api/cards/{pan}/rollback", pan);
+
+        // Then
+        response.then().statusCode(400).body("serviceName", equalTo("card-management"),
+                "error", equalTo("MethodArgumentNotValidException"), "message", containsString(rule));
+        balance(pan, 1000);
+    }
+
+    static Stream<Arguments> invalidReservationFields() {
+        Stream<Arguments> rrn = Stream.of("reserve", "rollback").flatMap(operation -> Stream.of(
+                Arguments.of(operation, "rrn", null, "blank"), Arguments.of(operation, "rrn", "", "blank|RRN"),
+                Arguments.of(operation, "rrn", " ", "blank|RRN"),
+                Arguments.of(operation, "rrn", "12345678901", "RRN"),
+                Arguments.of(operation, "rrn", "1234567890123", "RRN"),
+                Arguments.of(operation, "rrn", "ABCDEFGHIJKL", "RRN")));
+        return Stream.concat(rrn, Stream.of(Arguments.of("rollback", "pan", null, "blank"),
+                Arguments.of("rollback", "pan", "", "blank|PAN"), Arguments.of("rollback", "pan", " ", "blank|PAN"),
+                Arguments.of("rollback", "pan", "400000123456789", "PAN"),
+                Arguments.of("rollback", "pan", "40000012345678901", "PAN"),
+                Arguments.of("rollback", "pan", "400000123456789X", "PAN"),
+                Arguments.of("rollback", "amount", null, "null")));
     }
 
     @Test

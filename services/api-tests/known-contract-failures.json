@@ -1,0 +1,78 @@
+[
+  {
+    "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[1]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <200>\\.$"
+  },
+  {
+    "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[2]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <200>\\.$"
+  },
+  {
+    "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[3]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <200>\\.$"
+  },
+  {
+    "test": "shouldRejectDocumentedFieldFormatViolation(String, String)[4]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <200>\\.$"
+  },
+  {
+    "test": "shouldIdentifyInvalidGenerationField",
+    "failurePattern": "^1 expectation failed\\. JSON path message doesn't match\\. Expected: a string containing \"bins\" Actual: must not be empty$"
+  },
+  {
+    "test": "shouldRejectZeroAtAuthorizationBoundary",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <404>\\.$"
+  },
+  {
+    "test": "shouldNotRefundMoreThanReserved",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <200>\\.$"
+  },
+  {
+    "test": "shouldRejectMalformedCardFilterWith400(String, String)[1]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldRejectMalformedCardFilterWith400(String, String)[2]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldRejectMalformedCardFilterWith400(String, String)[3]",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldRejectMissingReserveAmountAsInputError",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldKeepIdenticalNanosecondMessageIdempotent",
+    "failurePattern": "^1 expectation failed\\. Expected status code <200> but was <409>\\.$"
+  },
+  {
+    "test": "shouldReturn400ForMalformedCardJson",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldReturnExpiryInDocumentedMmYyFormat",
+    "failurePattern": "^1 expectation failed\\. JSON path expiryDate doesn't match\\. Expected: a string matching the pattern '\\(0\\[1\\-9\\]\\|1\\[0\\-2\\]\\)\\\\d\\{2\\}' Actual: \\d{4}-(0[1-9]|1[0-2])$"
+  },
+  {
+    "test": "shouldReturnResponseMti0110",
+    "failurePattern": "^1 expectation failed\\. JSON path mti doesn't match\\. Expected: 0110 Actual: 0100$"
+  },
+  {
+    "test": "shouldRoutePublicMerchantListThroughGateway",
+    "failurePattern": "^1 expectation failed\\. Expected status code <200> but was <404>\\.$"
+  },
+  {
+    "test": "shouldNameInvalidAuthorizationField",
+    "failurePattern": "^1 expectation failed\\. JSON path message doesn't match\\. Expected: a string containing \"amount\" Actual: null$"
+  },
+  {
+    "test": "shouldReturnDbUnavailableOutcomeInsteadOfUnhandledRollbackError",
+    "failurePattern": "^1 expectation failed\\. Expected status code <400> but was <500>\\.$"
+  },
+  {
+    "test": "shouldExplainInvalidChartRange",
+    "failurePattern": "^1 expectation failed\\. JSON path message doesn't match\\. Expected: a string containing \"dateFrom must not be after dateTo\" Actual:$"
+  }
+]

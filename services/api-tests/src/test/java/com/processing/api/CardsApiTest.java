@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.processing.api.support.Api.gateway;
+import static io.restassured.config.HttpClientConfig.httpClientConfig;
+import static io.restassured.config.RestAssuredConfig.config;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -154,10 +156,12 @@ class CardsApiTest extends ApiTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2})
+    @ValueSource(ints = {1, 2, 10000})
     void shouldGenerateRequestedNumberOfCards(int count) {
         // Given / When
-        Response response = gateway().body(Map.of("count", count, "bins", List.of("400000"))).post("/api/cards/generate");
+        Response response = gateway().config(config().httpClient(httpClientConfig()
+                .setParam("http.connection.timeout", 5000).setParam("http.socket.timeout", 180000)))
+                .body(Map.of("count", count, "bins", List.of("400000"))).post("/api/cards/generate");
 
         // Then
         response.then().statusCode(201).body("generated", equalTo(count), "cards", hasSize(count),
@@ -249,6 +253,37 @@ class CardsApiTest extends ApiTest {
     static Stream<Arguments> invalidGenerationBins() {
         return Stream.of(Arguments.of((Object) null), Arguments.of(List.of()), Arguments.of(List.of("40000")),
                 Arguments.of(List.of("4000000")), Arguments.of(List.of("40000X")));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0,0", "0,1", "1,1"})
+    void shouldCreateCardWithZeroBalanceAndValidLimitBoundaries(int daily, int monthly) {
+        // Given
+        Map<String, Object> body = Data.changed(Data.card(), "initialBalance", 0);
+        body.put("dailyLimit", daily);
+        body.put("monthlyLimit", monthly);
+
+        // When
+        Response response = gateway().body(body).post("/api/cards");
+
+        // Then
+        response.then().statusCode(201).body("availableBalance", equalTo(0), "dailyLimit", equalTo(daily),
+                "monthlyLimit", equalTo(monthly), "status", equalTo("ACTIVE"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0,0", "0,1", "1,1"})
+    void shouldPatchValidLimitBoundaries(int daily, int monthly) {
+        // Given
+        String pan = createCard().path("pan");
+
+        // When
+        Response response = gateway().body(Map.of("dailyLimit", daily, "monthlyLimit", monthly))
+                .patch("/api/cards/{pan}", pan);
+
+        // Then
+        response.then().statusCode(200).body("dailyLimit", equalTo(daily), "monthlyLimit", equalTo(monthly),
+                "availableBalance", equalTo(1000), "status", equalTo("ACTIVE"));
     }
 
     static Stream<Arguments> invalidBulkFields() {
