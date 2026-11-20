@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReservationTest {
     @Test
-    void shouldAllowOnlyOneRollback() {
+    void shouldMarkReservationRolledBack() {
         // Arrange
         Reservation reservation = reservation();
         ReservationRollback rollback = reservation.startRollback(new BigDecimal("100"));
@@ -25,6 +25,15 @@ class ReservationTest {
         assertThat(reservation.status()).isEqualTo(ReservationStatus.RESERVED);
         assertThat(rollback.reservationId()).isEqualTo(reservation.id());
         assertThat(rollback.rollbackAmount()).isEqualByComparingTo("100");
+    }
+
+    @Test
+    void shouldRejectSecondRollback() {
+        // Arrange
+        Reservation reservation = reservation();
+        Reservation updated = reservation.rolledBack(reservation.startRollback(new BigDecimal("100")));
+
+        // Act / Assert
         assertThatThrownBy(() -> updated.startRollback(BigDecimal.ONE))
                 .isInstanceOf(RollbackAlreadySatisfiedException.class);
     }

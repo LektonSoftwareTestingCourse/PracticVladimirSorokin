@@ -11,6 +11,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -120,8 +121,8 @@ class DownstreamClientsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {200, 503})
-    void shouldReportAuthorizationAvailability(int status) {
+    @CsvSource({"200,ok", "503,down"})
+    void shouldReportAuthorizationAvailability(int status, String expected) {
         // Arrange
         server.expect(requestTo("http://auth/health")).andRespond(withStatus(HttpStatus.valueOf(status)));
 
@@ -129,7 +130,7 @@ class DownstreamClientsTest {
         String result = authorization.checkHealth();
 
         // Assert
-        assertThat(result).isEqualTo(status == 200 ? "ok" : "down");
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test

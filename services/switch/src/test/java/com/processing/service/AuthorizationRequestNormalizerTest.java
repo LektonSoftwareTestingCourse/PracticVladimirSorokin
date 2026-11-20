@@ -32,13 +32,22 @@ class AuthorizationRequestNormalizerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @CsvSource({"' '"})
-    void shouldKeepMissingIdentifiersForDownstreamValidation(String value) {
+    void shouldKeepMissingTerminalForDownstreamValidation(String value) {
         // Act
         String terminal = AuthorizationRequestNormalizer.normalizeTerminalId(value);
-        String merchant = AuthorizationRequestNormalizer.normalizeMerchantId(value);
 
         // Assert
         assertThat(terminal).isEqualTo(value);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @CsvSource({"' '"})
+    void shouldKeepMissingMerchantForDownstreamValidation(String value) {
+        // Act
+        String merchant = AuthorizationRequestNormalizer.normalizeMerchantId(value);
+
+        // Assert
         assertThat(merchant).isEqualTo(value);
     }
 }

@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -97,13 +99,10 @@ class RouteServiceTest {
     }
 
     @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = {"APPROVED", "DECLINED"})
-    void shouldReturn96AfterFailedPublishRegardlessOfRollbackResult(String rollbackStatus) {
+    @MethodSource("rollbackResponses")
+    void shouldReturn96AfterFailedPublishRegardlessOfRollbackResult(RollbackResponse rollback) {
         // Arrange
         when(authorization.authorize(any())).thenReturn(SwitchData.approved());
-        RollbackResponse rollback = rollbackStatus == null ? null
-                : new RollbackResponse("012345678901", "00", rollbackStatus, null, 1);
         when(authorization.rollback(any(), any())).thenReturn(rollback);
 
         // Act
@@ -113,6 +112,12 @@ class RouteServiceTest {
         assertThat(response.status()).isEqualTo("DECLINED");
         assertThat(response.responseCode()).isEqualTo("96");
         verify(authorization).rollback(any(), eq("012345678901"));
+    }
+
+    static Stream<RollbackResponse> rollbackResponses() {
+        return Stream.of(null,
+                new RollbackResponse("012345678901", "00", "APPROVED", null, 1),
+                new RollbackResponse("012345678901", "05", "DECLINED", "ROLLBACK_FAILED", 1));
     }
 
     @Test

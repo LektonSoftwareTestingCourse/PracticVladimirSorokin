@@ -75,6 +75,14 @@ class CardTest {
         assertThat(deleted.status()).isEqualTo(CardStatus.DELETED);
         assertThat(deleted.availableBalance()).isEqualTo(card.availableBalance());
         assertThat(card.status()).isEqualTo(CardStatus.ACTIVE);
+    }
+
+    @Test
+    void shouldRejectDeletingAlreadyDeletedCard() {
+        // Arrange
+        Card deleted = card(CardStatus.DELETED);
+
+        // Act / Assert
         assertThatThrownBy(deleted::deleted).isInstanceOf(IllegalStateException.class);
     }
 

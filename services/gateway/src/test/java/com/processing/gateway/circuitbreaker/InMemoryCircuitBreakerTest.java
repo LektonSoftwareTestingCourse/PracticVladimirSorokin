@@ -31,7 +31,7 @@ class InMemoryCircuitBreakerTest {
     }
 
     @Test
-    void shouldAllowOneProbeAtTimeoutAndCloseAfterSuccess() {
+    void shouldAllowFirstProbeAtTimeout() {
         // Arrange
         Clock clock = mock(Clock.class);
         when(clock.instant()).thenReturn(NOW);
@@ -41,12 +41,42 @@ class InMemoryCircuitBreakerTest {
 
         // Act
         boolean firstProbe = breaker.allowRequest("cms");
-        boolean secondProbe = breaker.allowRequest("cms");
-        breaker.recordSuccess("cms");
 
         // Assert
         assertThat(firstProbe).isTrue();
+    }
+
+    @Test
+    void shouldRejectSecondProbeWhileFirstIsInProgress() {
+        // Arrange
+        Clock clock = mock(Clock.class);
+        when(clock.instant()).thenReturn(NOW);
+        InMemoryCircuitBreaker breaker = InMemoryCircuitBreaker.forTesting(Duration.ofSeconds(10), 1, clock);
+        breaker.recordFailure("cms");
+        when(clock.instant()).thenReturn(NOW.plusSeconds(10));
+        breaker.allowRequest("cms");
+
+        // Act
+        boolean secondProbe = breaker.allowRequest("cms");
+
+        // Assert
         assertThat(secondProbe).isFalse();
+    }
+
+    @Test
+    void shouldCloseCircuitAfterSuccessfulProbe() {
+        // Arrange
+        Clock clock = mock(Clock.class);
+        when(clock.instant()).thenReturn(NOW);
+        InMemoryCircuitBreaker breaker = InMemoryCircuitBreaker.forTesting(Duration.ofSeconds(10), 1, clock);
+        breaker.recordFailure("cms");
+        when(clock.instant()).thenReturn(NOW.plusSeconds(10));
+        breaker.allowRequest("cms");
+
+        // Act
+        breaker.recordSuccess("cms");
+
+        // Assert
         assertThat(breaker.allowRequest("cms")).isTrue();
     }
 }
