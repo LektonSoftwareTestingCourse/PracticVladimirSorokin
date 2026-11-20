@@ -1,0 +1,42 @@
+name: Practice 5 API tests
+
+on:
+  push:
+    branches: [practice-5, 'practice-5-*']
+  pull_request:
+    paths:
+      - services/**
+      - scripts/run-api-tests.ps1
+      - .github/workflows/practice-5-api.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Run API tests, mutations and contract probes
+        shell: pwsh
+        run: ./scripts/run-api-tests.ps1
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: practice-5-api-results
+          path: |
+            services/api-tests/target/reports/
+            services/api-tests/target/evidence/
+          if-no-files-found: error
