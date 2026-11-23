@@ -1,143 +1,143 @@
 {
   "branch": "practice-5",
-  "completedAtUtc": "2026-11-20T05:09:49.0018759Z",
+  "completedAtUtc": "2026-11-20T06:22:22.9343773Z",
   "commands": [
     "pwsh -NoProfile -File ./scripts/run-api-tests.ps1"
   ],
-  "reportSession": "20261120-050153-202026",
+  "reportSession": "20261120-061513-d76bc0",
   "finalRuns": [
     {
+      "name": "run-1",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 481,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "run-1"
+        "errors": 0,
+        "tests": 481
+      }
     },
     {
+      "name": "run-2",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 481,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "run-2"
+        "errors": 0,
+        "tests": 481
+      }
     },
     {
+      "name": "run-3",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 481,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "run-3"
+        "errors": 0,
+        "tests": 481
+      }
     },
     {
+      "name": "publish-failure-rollback",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "publish-failure-rollback"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "absence-after-recovery",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "absence-after-recovery"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "contract-defects",
+      "knownFailuresVerified": true,
       "exitCode": 1,
       "result": {
         "skipped": 0,
-        "tests": 19,
         "failures": 19,
-        "errors": 0
-      },
-      "knownFailuresVerified": true,
-      "name": "contract-defects"
+        "errors": 0,
+        "tests": 19
+      }
     },
     {
+      "name": "database-prepare",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "database-prepare"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "database-unavailable",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 11,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "database-unavailable"
+        "errors": 0,
+        "tests": 11
+      }
     },
     {
+      "name": "database-recovered",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "database-recovered"
+        "errors": 0,
+        "tests": 1
+      }
     }
   ],
   "mutations": [
     {
+      "name": "mutation-status",
       "exitCode": 1,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 1,
-        "errors": 0
-      },
-      "name": "mutation-status"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "mutation-balance",
       "exitCode": 1,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 1,
-        "errors": 0
-      },
-      "name": "mutation-balance"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "mutation-dedup",
       "exitCode": 1,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 1,
-        "errors": 0
-      },
-      "name": "mutation-dedup"
+        "errors": 0,
+        "tests": 1
+      }
     },
     {
+      "name": "dedup-restored",
       "exitCode": 0,
       "result": {
         "skipped": 0,
-        "tests": 1,
         "failures": 0,
-        "errors": 0
-      },
-      "name": "dedup-restored"
+        "errors": 0,
+        "tests": 1
+      }
     }
   ],
   "contractAssertions": [
@@ -246,7 +246,7 @@
   },
   "sourceSha256": {
     ".github/workflows/practice-5-api.yml": "69ddb934cbfa4a70654da2cef14539b298c12ad846a07963ce479d4d6e3a029e",
-    "scripts/run-api-tests.ps1": "8a893fca5933d8844f9fff9e183e716bfa8b446a8b4be1e2321ef341a98029a8",
+    "scripts/run-api-tests.ps1": "af7376fb0e16a360faff2e6cd85fe8a38d829491d7df536b926f4dc74bc31075",
     "services/api-tests/compose.yaml": "06fa1a7a453e24b9f046fa36bbb3c5187ff8ade4174fedf008224768ec0f5b03",
     "services/api-tests/http_faults.py": "7a5785e073c1ce48ed14dca54b8a235f9fa4979015fbb08817d5d7884ef47e76",
     "services/api-tests/known-contract-failures.json": "38e919586ef8688505a2d1840906a88aff4ab39d1ade3e3c89b359af04cb60b7",
@@ -254,11 +254,11 @@
     "services/api-tests/src/test/java/com/processing/api/AuthorizationApiTest.java": "22ad7d0c513cb540dab85aa40a43af40f28b876131f37a2adacc17471f5cd3e3",
     "services/api-tests/src/test/java/com/processing/api/AuthorizationValidationApiTest.java": "a06618e828a04a8070722332dc1d7a2894676fa8c4b7dcd1a6f4d331d661e53b",
     "services/api-tests/src/test/java/com/processing/api/BinLookupApiTest.java": "fc8f907a44987735f568f08585ee646c49c4e004fc4f3ef092700d11d2690e52",
-    "services/api-tests/src/test/java/com/processing/api/BrokerFailureApiTest.java": "630624e6da4c51a0688b739fe3cff3f4c39339e604c1fb4210848a3258a83abd",
+    "services/api-tests/src/test/java/com/processing/api/BrokerFailureApiTest.java": "72a967cd0dffe5a6612eacef71fb89caa309ce95b2e351b83b5a4d0dc8689116",
     "services/api-tests/src/test/java/com/processing/api/CardFiltersApiTest.java": "289478a39cfb156b008aa0f98c7cc8ec3a441e2492978ae1aa042ca7cbfb0786",
     "services/api-tests/src/test/java/com/processing/api/CardsApiTest.java": "124c3a58d0ac2b89bf389925cff871cd4889be9324cf313d45a82e0b052e102d",
     "services/api-tests/src/test/java/com/processing/api/ContractDefectsTest.java": "a8fde0d75940ee521e2cf3070a7a58bcf29df684a7c59c83452e5af16157439d",
-    "services/api-tests/src/test/java/com/processing/api/DatabaseFailureApiTest.java": "12fafdb73a91194f6161cb7b6e9b53473f04a2bd61023815364d30fac0f58d04",
+    "services/api-tests/src/test/java/com/processing/api/DatabaseFailureApiTest.java": "e8c26d6726a082a842ed748f319be2b72b8410b5fb41a2af68e043bbe9a3a552",
     "services/api-tests/src/test/java/com/processing/api/FaultApiTest.java": "c0b4128a142e727f9570bc51c33cea835845b6483b325432528c1c4d408f8141",
     "services/api-tests/src/test/java/com/processing/api/GatewayApiTest.java": "accbedd345fe967957cf78afb995e748611f2ed9730f45660e2d7aba6cdb23ad",
     "services/api-tests/src/test/java/com/processing/api/LoggerApiTest.java": "1a950bba2d3abc339cbae6de2c2a184428e45999d6126579ba17db4a32417082",

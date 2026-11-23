@@ -146,7 +146,7 @@ function Check-PublishRollback {
         Invoke-Compose -Options @('start', 'rabbitmq')
         $ready = $false
         for ($attempt = 0; $attempt -lt 30; $attempt++) {
-            & docker compose -p sorokin-api -f $composeFile exec -T rabbitmq rabbitmq-diagnostics -q check_running 2>&1 |
+            & docker compose -p sorokin-api -f $composeFile exec -T rabbitmq rabbitmq-diagnostics -q check_port_connectivity 2>&1 |
                 Out-Null
             if ($LASTEXITCODE -eq 0) { $ready = $true; break }
             Start-Sleep -Seconds 1
